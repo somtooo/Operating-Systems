@@ -1,0 +1,4 @@
+This is a file with input text.
+
+Run it through the filter programs
+and see what they produce as output.
