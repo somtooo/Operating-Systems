@@ -15,7 +15,7 @@ int main()
    int rv = scanf("%lf", &x);
    while( rv > 0 )
    {
-      //printf("%f\n", x);
+      printf("%f\n", x);
 
       printf("Please enter a number: ");
       rv = scanf("%lf", &x);

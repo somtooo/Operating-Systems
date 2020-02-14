@@ -12,21 +12,49 @@ void printError(char* functionName);
 
 int main(void)
 {
-  
-   int choice = -1;
-   while( choice != 0 )
-   {
-     
+  HANDLE hProcess;
+  HANDLE hThread;
+  STARTUPINFO si;
+  PROCESS_INFORMATION pi;
+  DWORD dwProcessId = 0;
+  DWORD dwThreadId = 0;
+  ZeroMemory(&si, sizeof(si));
+  ZeroMemory(&pi, sizeof(pi));
+  BOOL bCreateProcess = NULL;
+   int choice = 6;
+
+   
+   
+     while (choice != 0)
+     {
       printf("Please make a choice from the following list.\n");
       printf(" 0: Quit\n 1: Run Notepad\n 2: Run WordPad\n*3:Run cmd shell\n 4:Run Calculator\n 5:Run Explorer\nEnter your choice now:");
-      choice = scanf("%d", &choice);
-   }
-
-   return 0;
-
-
-
-
+      scanf("%d", &choice);
+      printf("%d\n", choice);
+      if (choice == 1)
+      // printf("%d\n", choice);
+      {
+         bCreateProcess = CreateProcess("C:\\WINDOWS\\system32\\notepad.exe",
+         NULL,
+         NULL,
+         NULL,
+         FALSE,
+         0,
+         NULL,
+         NULL,
+         &si,
+         &pi);
+         if (bCreateProcess == FALSE)
+         {
+            printf("Error\n");
+            
+         }
+         printf("Started program 1 with pid = %d\n",pi.dwProcessId);
+         // WaitForSingleObject(pi.hProcess,INFINITE);
+         // CloseHandle(pi.hThread);
+         // CloseHandle(pi.hProcess);
+      }
+     }
 
    return 0;
 }
