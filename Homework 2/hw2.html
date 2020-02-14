@@ -1,0 +1,131 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CS 30200/ECE 46810 - Homework 2</title>
+  <meta name="description" content="CS 30200/ECE 46810 homework 2">
+  <meta name="author" content="Roger L. Kraft">
+  <link rel="stylesheet" href="http://math.pnw.edu/~rlkraft/roger-v2.css">
+  <!--[if lt IE 9]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+
+<body>
+<!--
+<header>
+  <a href="http://math.pnw.edu/~rlkraft/" title="Roger L. Kraft">Roger L. Kraft</a>
+</header>
+ -->
+<nav>
+  <ul class="nav-list" role="navigation">
+    <li><a href="../cs30200.html">CS 30200/ECE 46810</a></li>
+    <li><a href="../syllabus.html">Syllabus</a></li>
+    <li><a href="../class.html">Lectures and Readings</a></li>
+    <li><a href="../homework.html">Homework Assignments</a></li>
+  </ul>
+  <ul class="nav-list" role="navigation">
+    <li><a href="http://math.pnw.edu/~rlkraft/roger.html">Roger Kraft</a></li>
+    <li><a href="http://academics.pnw.edu/math-stats-computer-science/">Math & CS Department</a></li>
+    <li><a href="http://academics.pnw.edu/engineering-sciences">College of Engineering & Sciences</a></li>
+    <li><a href="http://www.pnw.edu/">Purdue University Northwest</a></li>
+  </ul>
+</nav>
+
+<section id="Content">
+<h1>
+Programming Assignment 2<br>
+CS 30200/ECE 46810<br>
+Operating Systems<br>
+Spring, 2020
+</h1>
+
+<p>
+For this assignment you will write a "launcher" program that creates Windows processes.
+This assignment makes use of the files contained in this <a href="hw2.zip">zip file</a>.
+This assignment is due Monday, February 10.
+</p>
+
+<p>
+Write a console program that prompts the user with a list of the following five programs that come with Windows, <code>notepad.exe</code>, <code>write.exe</code>, <code>cmd.exe</code>, <code>calc.exe</code>, and <code>explorer.exe</code>. Have the five programs numbered in the list from 1 to 5. Have the user choose one of the five programs by inputting a number between 1 and 5. Then your program should use the Windows function <a href="https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessa">CreateProcessA()</a> to start up the program that the user chose. After the process has been created, output a message that states the PID of the newly created process. After your program launches the user's choice, your program should once again prompt the user with the list of available programs and let the user launch another program (but see the next paragraph for an exception). Your program should keep on letting the user launch programs until the user enters zero.
+</p>
+
+<p>
+One of the five programs is special. Mark the <code>cmd.exe</code> program in the menu with a * in front of its number. For the <code>cmd.exe</code> program, your launcher program should wait for the launched <code>cmd.exe</code> process to terminate. In other words, your launcher <a href="http://en.wikipedia.org/wiki/Blocking_%28computing%29">blocks</a> after it launches the <code>cmd.exe</code> process and the launcher <a href="https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject">waits</a> (i.e., remains blocked) until the <code>cmd.exe</code> process terminates. When <code>cmd.exe</code> <a href="http://ss64.com/nt/exit.html">terminates</a>, your program should look up the <code>cmd.exe</code> <a href="https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getexitcodeprocess">exit value</a> and output a message that states the exit value. Then your launcher should prompt the user for another choice.
+</p>
+
+<p>
+In the zip file there is an image file, <code>launcher_demo.png</code>, that shows a screen shot of a user session with the <code>launcher.exe</code> program. Write your program's user prompts so that they look exactly like the screen shot's prompts.
+</p>
+
+<p>
+Here are a few additional requirements of your launcher. Your launcher program should use standard Windows environment variables to create command lines for the above five programs in a way that is independent of any particular Windows installation. For example, some versions of Windows have a <code>C:\Windows</code> system directory and some have a <code>C:\WINNT</code> system directory. Some people have a <code>C:\Program Files</code> directory while others might have a <code>D:\Program Files</code> directory. Your program should work independently of these kinds of choices. Relevant environment variables are, for example, <code>ComSpec</code>, <code>SystemDrive</code>, <code>SystemRoot</code>, <code>ProgramFiles</code>, <code>HomeDrive</code>, <code>windir</code>. Below are two references that list a number of standard Windows environment variables.
+</p>
+
+<ul>
+<li><a href="http://ss64.com/nt/syntax-variables.html">Windows Environment Variables</a> at ss64.com</li>
+<li><a href="http://en.wikipedia.org/wiki/Environment_variable#Windows">Windows Environment Variables</a> at Wikipedia.org</li>
+</ul>
+
+<p>
+The best way to create command-line strings that contain the values of environment variables is to combine the <a href="http://www.cplusplus.com/reference/cstdlib/getenv/">getenv()</a> function with the <a href="http://www.cplusplus.com/reference/cstdio/sprintf/">sprintf()</a> function.
+</p>
+
+<p>
+When your program launches the <code>cmd.exe</code> program, it should give the new console window the title "What is your command?". The console prompt should be "Speak to me>". The console window should have light blue letters on a white background. The console window should be positioned with its top left corner at the top left corner of your desktop.(Note: I am purposely not telling you exactly how to do these. You will need to use a combination of parameters to <a href="https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessa">CreateProcessA()</a>, entries in the <a href="https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfoa">STARTUPINFO</a> data structure, and using the <a href="https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/putenv-wputenv?view=vs-2019">_putenv()</a> function to set environment variables.) Your new console window should look like the <code>launcher_demo_cmd.png</code> screen shot in the zip file.
+</p>
+
+<p>
+In the zip file there is an executable program called <code>launcher_demo.exe</code> that you can run to see how your launcher program should behave. An image file called <code>launcher_demo.png</code> shows you what a short session using the launcher program looks like.
+</p>
+
+<p>
+Your program should print out reasonable error messages when something goes wrong (e.g., file not found). Use the error message function included in the example programs from the class lectures.
+</p>
+
+<p>
+<a href="http://cs.pnw.edu/~rlkraft/cs30200/handin.html">Turn in</a> a zip file called <code>CS302Hw2Surname.zip</code> (where <code>Surname</code> is your last name) containing your version of <code>launcher.c</code>.
+</p>
+
+<p>
+This assignment is due Monday, February 10.
+</p>
+
+<p>
+Here are references to the relevant functions in the Windows API.
+<ul>
+<li><a href="https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessa">CreateProcessA()</a></li>
+<li><a href="https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfoa">STARTUPINFO</a> data structure</li>
+<li><a href="https://docs.microsoft.com/en-us/windows/win32/procthread/setting-window-properties-using-startupinfo">Setting Window Properties Using STARTUPINFO</a></li>
+<li><a href="https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-process_information">PROCESS_INFORMATION</a> data structure</li>
+<li><a href="https://docs.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject">WaitForSingleObject()</a></li>
+<li><a href="https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getexitcodeprocess">GetExitCodeProcess()</a></li>
+<li><a href="https://docs.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle">CloseHandle()</a></li>
+<!-- <li><a href="https://docs.microsoft.com/en-us/windows/desktop/ProcThread/process-and-thread-functions"> Process and Thread Functions</a></li>-->
+<li><a href="http://technet.microsoft.com/en-us/library/bb490954.aspx">Command shell overview</a></li>
+<li><a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/cmd">cmd</a> shell</li>
+<li><a href="https://ss64.com/nt/cmd.html">cmd.exe</a></li>
+<li><a href="http://ss64.com/nt/exit.html">exit</a> shell command </li>
+<li><a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/prompt">prompt</a> shell command</li>
+<li><a href="http://ss64.com/nt/prompt.html">prompt</a> shell command & environment variable</li>
+<li><a href="https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/putenv-wputenv?view=vs-2019">_putenv()</a></li>
+<li><a href="http://www.cplusplus.com/reference/cstdio/sprintf/">sprintf()</a></li>
+<li><a href="http://www.cplusplus.com/reference/cstdlib/getenv/">getenv()</a></li>
+</ul>
+</p>
+
+</section>
+
+<footer>
+  <script language="JavaScript" type="text/javascript">
+      document.write("<font size=\"-2\"><i>Last modified on " + document.lastModified + ".<\/i><\/font>");
+  </script>
+  <br>
+  <a href="mailto:rlkraft@pnw.edu"><font size="-2"><i>compliments and criticisms</i></font></a>
+</footer>
+
+</body>
+</html>
