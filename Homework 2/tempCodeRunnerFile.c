@@ -1,2 +1,3 @@
-CloseHandle(pi.hThread);
-         // CloseHandle(pi.hProcess);
+WaitForSingleObject(pi.hProcess,INFINITE);
+         CloseHandle(pi.hThread);
+         CloseHandle(pi.hProcess);

@@ -18,12 +18,20 @@ int main(void)
   PROCESS_INFORMATION pi;
   DWORD dwProcessId = 0;
   DWORD dwThreadId = 0;
+  RECT rectDesktop;
+  GetClientRect(GetDesktopWindow(), &rectDesktop);
   ZeroMemory(&si, sizeof(si));
   ZeroMemory(&pi, sizeof(pi));
   BOOL bCreateProcess = NULL;
-   int choice = 6;
-
-   
+  int choice = 6;
+  DWORD dwCode;
+  char notePad[50],wordPad[50],cmd[50],calculator[50],explorer[50];
+  sprintf(notePad,"%s\\system32\\notepad.exe",getenv("WINDIR"));
+  sprintf(cmd,"%s\\system32\\cmd.exe",getenv("WINDIR"));
+  sprintf(calculator,"%s\\system32\\calc.exe",getenv("WINDIR"));
+  sprintf(explorer,"%s\\explorer.exe",getenv("WINDIR"));
+  sprintf(wordPad,"%s\\Windows NT\\Accessories\\wordpad.exe",getenv("programfiles"));
+ 
    
      while (choice != 0)
      {
@@ -31,29 +39,117 @@ int main(void)
       printf(" 0: Quit\n 1: Run Notepad\n 2: Run WordPad\n*3:Run cmd shell\n 4:Run Calculator\n 5:Run Explorer\nEnter your choice now:");
       scanf("%d", &choice);
       printf("%d\n", choice);
-      if (choice == 1)
-      // printf("%d\n", choice);
+      if (choice == 3)
       {
-         bCreateProcess = CreateProcess("C:\\WINDOWS\\system32\\notepad.exe",
+         si.dwX = si.dwXSize = (rectDesktop.left);
+         si.dwY = si.dwYSize = (rectDesktop.top);
+         si.dwFlags = STARTF_USEFILLATTRIBUTE|STARTF_USEPOSITION | STARTF_USESIZE;
+         si.lpTitle = "Whats your command";
+         si.dwFillAttribute=FOREGROUND_BLUE| BACKGROUND_RED| BACKGROUND_GREEN| BACKGROUND_BLUE;
+         putenv("PROMPT=Speak to me>");
+         
+         bCreateProcess = CreateProcess(cmd,
          NULL,
          NULL,
          NULL,
          FALSE,
-         0,
+         CREATE_NEW_CONSOLE,
          NULL,
          NULL,
          &si,
          &pi);
          if (bCreateProcess == FALSE)
          {
-            printf("Error\n");
+            printError("CreateProcess");
             
          }
          printf("Started program 1 with pid = %d\n",pi.dwProcessId);
-         // WaitForSingleObject(pi.hProcess,INFINITE);
+         WaitForSingleObject(pi.hProcess,INFINITE);
          // CloseHandle(pi.hThread);
          // CloseHandle(pi.hProcess);
+         if(GetExitCodeProcess(pi.hProcess, &dwCode))
+            printf("After terminated, code = %X\n", dwCode);
+         else
+           printError("GetExitCodeProcess");
       }
+      
+      else if (choice == 1)
+      {
+         bCreateProcess = CreateProcess(notePad,
+         NULL,
+         NULL,
+         NULL,
+         FALSE,
+         CREATE_NEW_CONSOLE,
+         NULL,
+         NULL,
+         &si,
+         &pi);
+         if (bCreateProcess == FALSE)
+         {
+            printError("CreateProcess");
+            
+         }
+         printf("Started program 1 with pid = %d\n",pi.dwProcessId);
+      }
+      else if (choice == 2)
+      {
+         bCreateProcess = CreateProcess(wordPad,
+         NULL,
+         NULL,
+         NULL,
+         FALSE,
+         CREATE_NEW_CONSOLE,
+         NULL,
+         NULL,
+         &si,
+         &pi);
+         if (bCreateProcess == FALSE)
+         {
+            printError("CreateProcess");
+            
+         }
+         printf("Started program 1 with pid = %d\n",pi.dwProcessId);
+      }
+      else if (choice == 4)
+      {
+         bCreateProcess = CreateProcess(calculator,
+         NULL,
+         NULL,
+         NULL,
+         FALSE,
+         CREATE_NEW_CONSOLE,
+         NULL,
+         NULL,
+         &si,
+         &pi);
+         if (bCreateProcess == FALSE)
+         {
+            printError("CreateProcess");
+            
+         }
+         printf("Started program 1 with pid = %d\n",pi.dwProcessId);
+      }
+      else if (choice == 5)
+      {
+         bCreateProcess = CreateProcess(explorer,
+         NULL,
+         NULL,
+         NULL,
+         FALSE,
+         CREATE_NEW_CONSOLE,
+         NULL,
+         NULL,
+         &si,
+         &pi);
+         if (bCreateProcess == FALSE)
+         {
+            printError("CreateProcess");
+            
+         }
+         printf("Started program 1 with pid = %d\n",pi.dwProcessId);
+      }
+      
      }
 
    return 0;
@@ -90,3 +186,4 @@ void printError(char* functionName)
    LocalFree( lpMsgBuf );
    //ExitProcess(1);  // terminate the program
 }//printError
+
